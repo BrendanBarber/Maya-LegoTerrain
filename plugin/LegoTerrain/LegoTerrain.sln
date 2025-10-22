@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36616.10 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LegoTerrain", "LegoTerrain\LegoTerrain.vcxproj", "{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Debug|x64.ActiveCfg = Debug|x64
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Debug|x64.Build.0 = Debug|x64
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Debug|x86.ActiveCfg = Debug|Win32
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Debug|x86.Build.0 = Debug|Win32
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Release|x64.ActiveCfg = Release|x64
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Release|x64.Build.0 = Release|x64
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Release|x86.ActiveCfg = Release|Win32
+		{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5093F3C0-5770-4263-A182-9D7DC3E976CA}
+	EndGlobalSection
+EndGlobal

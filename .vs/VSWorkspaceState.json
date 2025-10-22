@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\plugin",
+    "\\plugin\\LegoTerrain",
+    "\\plugin\\LegoTerrain\\LegoTerrain"
+  ],
+  "SelectedNode": "\\plugin\\LegoTerrain\\LegoTerrain\\pluginMain.cpp",
+  "PreviewInSolutionExplorer": false
+}
