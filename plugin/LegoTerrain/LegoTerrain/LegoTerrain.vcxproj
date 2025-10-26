@@ -145,10 +145,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="HeightmapComputeShader.cpp" />
     <ClCompile Include="pluginMain.cpp" />
     <ClCompile Include="VoxelizeTerrainCmd.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="HeightmapComputeShader.h" />
     <ClInclude Include="VoxelizeTerrainCmd.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

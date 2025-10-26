@@ -21,9 +21,15 @@
     <ClCompile Include="VoxelizeTerrainCmd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HeightmapComputeShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VoxelizeTerrainCmd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightmapComputeShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

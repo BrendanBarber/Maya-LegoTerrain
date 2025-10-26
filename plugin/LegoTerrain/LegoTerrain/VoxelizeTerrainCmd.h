@@ -33,22 +33,17 @@ private:
 	static const char* outputNameFlag;
 	static const char* outputNameFlagLong;
 
-	std::unique_ptr<std::vector<float>> heightData;
-	std::unique_ptr<std::vector<MVector>> voxelPositions;
+	std::unique_ptr<std::vector<MVector>> m_voxelPositions;
 
-	MObject particleSystemObj;
-	MObject instancerObj;
+	MObject m_particleSystemObj;
+	MObject m_instancerObj;
 
-	double brickScale;
-	int imageWidth;
-	int imageHeight;
-	MString outputName;
+	float m_brickScale;
+	unsigned int m_imageWidth;
+	unsigned int m_imageHeight;
+	MString m_outputName;
 
-	MStatus loadHeightmap(const MString& filepath, std::vector<float>& heightData,
-		int& width, int& height);
-
-	MStatus voxelizeHeightmap(const std::vector<float>& heightData, int width, int height,
-		std::vector<MVector>& outVoxelPositions);
+	MStatus loadHeightmap(const MString& filepath, std::vector<MVector>& outVoxelPositions);
 
 	MStatus createParticleSystem(const std::vector<MVector>& voxelPositions);
 };
