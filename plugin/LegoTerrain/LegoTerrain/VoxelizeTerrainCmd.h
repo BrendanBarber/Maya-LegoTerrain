@@ -38,12 +38,18 @@ private:
 	MObject m_particleSystemObj;
 	MObject m_instancerObj;
 
+	MString m_heightmapPath;
 	float m_brickScale;
+	unsigned int m_terrainWidth;
+	unsigned int m_terrainHeight;
 	unsigned int m_imageWidth;
 	unsigned int m_imageHeight;
 	MString m_outputName;
+	bool m_hasValidData;
+
+	MStatus parseArguments(const MArgList& args);
+	MStatus executeCommand();
 
 	MStatus loadHeightmap(const MString& filepath, std::vector<MVector>& outVoxelPositions);
-
 	MStatus createParticleSystem(const std::vector<MVector>& voxelPositions);
 };

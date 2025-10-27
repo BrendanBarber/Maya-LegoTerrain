@@ -45,7 +45,7 @@ __kernel void generateVoxels(
     int idx = y * width + x;
     uchar4 pixel = input[idx];
     
-    // Convert to grayscale (0-255 range)
+    // Convert to grayscale
     float gray = (pixel.x + pixel.y + pixel.z) / 3.0f;
     int heightVoxels = (int)(gray);
     
@@ -71,7 +71,7 @@ __kernel void generateVoxels(
         }
     }
     
-    // Calculate base offset for this pixel's voxel column
+    // Calculate base offset for this pixel
     int outputBase = idx * maxHeight;
     
     float worldX = (float)x * voxelSize;
@@ -85,7 +85,7 @@ __kernel void generateVoxels(
         writeOffset++;
     }
     
-    // Mark remaining slots as invalid using NaN
+    // Mark remaining slots as invalid
     for (int i = writeOffset; i < maxHeight; i++) {
         voxelPositions[outputBase + i] = (float3)(NAN, NAN, NAN);
     }
