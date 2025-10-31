@@ -4,6 +4,7 @@
 #include <maya/MGlobal.h>
 #include <maya/MPxCommand.h>
 #include <maya/MSyntax.h>
+#include <maya/MFnParticleSystem.h>
 
 class VoxelizeTerrainCmd : public MPxCommand
 {
@@ -33,7 +34,7 @@ private:
 	static const char* outputNameFlag;
 	static const char* outputNameFlagLong;
 
-	std::unique_ptr<std::vector<MVector>> m_voxelPositions;
+	std::vector<MVector> m_voxelPositions;
 
 	MObject m_particleSystemObj;
 	MObject m_instancerObj;

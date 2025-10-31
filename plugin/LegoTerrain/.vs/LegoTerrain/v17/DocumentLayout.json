@@ -15,12 +15,12 @@
       "RelativeMoniker": "D:0:0:{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}|LegoTerrain\\LegoTerrain.vcxproj|solutionrelative:LegoTerrain\\HeightmapComputeShader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}|LegoTerrain\\LegoTerrain.vcxproj|C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\pluginMain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}|LegoTerrain\\LegoTerrain.vcxproj|solutionrelative:LegoTerrain\\pluginMain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}|LegoTerrain\\LegoTerrain.vcxproj|C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\HeightmapComputeShader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}|LegoTerrain\\LegoTerrain.vcxproj|solutionrelative:LegoTerrain\\HeightmapComputeShader.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}|LegoTerrain\\LegoTerrain.vcxproj|C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\pluginMain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A05386B6-BE9C-42B7-82D6-0D13C914B6AC}|LegoTerrain\\LegoTerrain.vcxproj|solutionrelative:LegoTerrain\\pluginMain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,19 +30,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "HeightmapComputeShader.h",
               "DocumentMoniker": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\HeightmapComputeShader.h",
               "RelativeDocumentMoniker": "LegoTerrain\\HeightmapComputeShader.h",
               "ToolTip": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\HeightmapComputeShader.h",
               "RelativeToolTip": "LegoTerrain\\HeightmapComputeShader.h",
-              "ViewState": "AgIAABYAAAAAAAAAAADwvzQAAAApAAAAAAAAAA==",
+              "ViewState": "AgIAABAAAAAAAAAAAAAcwDUAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-10-26T06:10:12.924Z"
+              "WhenOpened": "2025-10-26T06:10:12.924Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -52,14 +53,27 @@
               "RelativeDocumentMoniker": "LegoTerrain\\HeightmapComputeShader.cpp",
               "ToolTip": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\HeightmapComputeShader.cpp",
               "RelativeToolTip": "LegoTerrain\\HeightmapComputeShader.cpp",
-              "ViewState": "AgIAABEBAAAAAAAAAAAAABkBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkBAAAAAAAAAAAcwC4BAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-10-26T05:00:45.121Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
+              "Title": "VoxelizeTerrainCmd.cpp",
+              "DocumentMoniker": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\VoxelizeTerrainCmd.cpp",
+              "RelativeDocumentMoniker": "LegoTerrain\\VoxelizeTerrainCmd.cpp",
+              "ToolTip": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\VoxelizeTerrainCmd.cpp",
+              "RelativeToolTip": "LegoTerrain\\VoxelizeTerrainCmd.cpp",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAABgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-10-22T06:14:36.599Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "pluginMain.cpp",
               "DocumentMoniker": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\pluginMain.cpp",
               "RelativeDocumentMoniker": "LegoTerrain\\pluginMain.cpp",
@@ -72,26 +86,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "VoxelizeTerrainCmd.cpp",
-              "DocumentMoniker": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\VoxelizeTerrainCmd.cpp",
-              "RelativeDocumentMoniker": "LegoTerrain\\VoxelizeTerrainCmd.cpp",
-              "ToolTip": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\VoxelizeTerrainCmd.cpp",
-              "RelativeToolTip": "LegoTerrain\\VoxelizeTerrainCmd.cpp",
-              "ViewState": "AgIAAJAAAAAAAAAAAAAAAKIAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-10-22T06:14:36.599Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "VoxelizeTerrainCmd.h",
               "DocumentMoniker": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\VoxelizeTerrainCmd.h",
               "RelativeDocumentMoniker": "LegoTerrain\\VoxelizeTerrainCmd.h",
               "ToolTip": "C:\\Users\\brend\\Desktop\\Art\\TDSummer\\MayaProjects\\LegoTerrain\\plugin\\LegoTerrain\\LegoTerrain\\VoxelizeTerrainCmd.h",
               "RelativeToolTip": "LegoTerrain\\VoxelizeTerrainCmd.h",
-              "ViewState": "AgIAABsAAAAAAAAAAAAAADIAAAAaAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAACQAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-10-22T06:14:17.859Z",
               "EditorCaption": ""

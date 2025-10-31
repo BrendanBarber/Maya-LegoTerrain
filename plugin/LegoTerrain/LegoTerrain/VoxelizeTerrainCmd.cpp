@@ -2,6 +2,12 @@
 #include "HeightmapComputeShader.h"
 #include <maya/MImage.h>
 #include <maya/MArgDatabase.h>
+#include <maya/MVectorArray.h>
+#include <maya/MSelectionList.h>
+#include <maya/MDagPath.h>
+#include <maya/MFnInstancer.h>
+#include <maya/MDGModifier.h>
+#include <maya/MPlug.h>
 #include <fstream>
 
 const char* VoxelizeTerrainCmd::commandName = "voxelizeTerrain";
@@ -17,11 +23,6 @@ const char* VoxelizeTerrainCmd::outputNameFlagLong = "-outputName";
 
 VoxelizeTerrainCmd::VoxelizeTerrainCmd()
 {
-	VoxelizeTerrainCmd::m_voxelPositions = nullptr;
-
-	//VoxelizeTerrainCmd::m_particleSystemObj is null
-	//VoxelizeTerrainCmd::m_instancerObj is null
-
 	VoxelizeTerrainCmd::m_heightmapPath = "";
 	VoxelizeTerrainCmd::m_brickScale = 1.0;
 	VoxelizeTerrainCmd::m_terrainWidth = 512;
@@ -70,7 +71,17 @@ MStatus VoxelizeTerrainCmd::redoIt()
 
 MStatus VoxelizeTerrainCmd::undoIt()
 {
+	MStatus status;
+	MDGModifier dgMod;
 
+	if (!m_particleSystemObj.isNull()) {
+		dgMod.deleteNode(m_particleSystemObj);
+	}
+	if (!m_instancerObj.isNull()) {
+		dgMod.deleteNode(m_instancerObj);
+	}
+
+	return dgMod.doIt();
 }
 
 bool VoxelizeTerrainCmd::isUndoable() const {
@@ -160,7 +171,61 @@ MStatus VoxelizeTerrainCmd::parseArguments(const MArgList& args)
 }
 
 MStatus VoxelizeTerrainCmd::executeCommand() {
+	MStatus status;
 	
+	// Load the heightmap to get voxel positions
+	status = loadHeightmap(m_heightmapPath, m_voxelPositions);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	// Use the voxel positions to create a particle system
+	status = createParticleSystem(m_voxelPositions);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	return MS::kSuccess;
+}
+
+MStatus VoxelizeTerrainCmd::createParticleSystem(const std::vector<MVector>& voxelPositions)
+{
+	MStatus status;
+
+	// Create particle object
+	MString particleName = "voxelParticles_" + m_outputName;
+	MGlobal::executeCommand("particle -name " + particleName, status);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	MSelectionList selList;
+	status = selList.add(particleName);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+	status = selList.getDependNode(0, m_particleSystemObj);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	// Use voxel positions to position particles
+	for (const MVector& pos : voxelPositions) {
+		MString cmd = MString("particle -e -position ") +
+			pos.x + " " + pos.y + " " + pos.z + " " + particleName;
+		MGlobal::executeCommand(cmd);
+	}
+
+	MGlobal::executeCommand("saveInitialState " + particleName);
+
+	MString cubeName = "voxelCube_" + m_outputName;
+	MGlobal::executeCommand("polyCube -name " + cubeName, status);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	MString instancerName = "voxelInstancer_" + m_outputName;
+	MGlobal::executeCommand("particleInstancer -name " + instancerName +
+		" -addObject -object " + cubeName + " " + particleName, status);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	status = selList.clear();
+	status = selList.add(instancerName);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+	status = selList.getDependNode(0, m_instancerObj);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	MGlobal::executeCommand("hide " + cubeName);
+
+	return MS::kSuccess;
 }
 
 MStatus VoxelizeTerrainCmd::loadHeightmap(const MString& filepath, std::vector<MVector>& outVoxelPositions)
