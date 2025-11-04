@@ -1,0 +1,5 @@
+﻿  HeightmapComputeShader.cpp
+  importing
+C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\HeightmapComputeShader.cpp(194,75): warning C4244: 'argument': conversion from 'size_t' to 'double', possible loss of data
+     Creating library C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\x64\Debug\LegoTerrain.lib and object C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\x64\Debug\LegoTerrain.exp
+  LegoTerrain.vcxproj -> C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\x64\Debug\LegoTerrain.mll

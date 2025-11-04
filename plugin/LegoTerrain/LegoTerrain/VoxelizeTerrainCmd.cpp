@@ -8,6 +8,7 @@
 #include <maya/MFnInstancer.h>
 #include <maya/MDGModifier.h>
 #include <maya/MPlug.h>
+#include <maya/MPointArray.h>
 #include <fstream>
 
 const char* VoxelizeTerrainCmd::commandName = "voxelizeTerrain";
@@ -115,7 +116,7 @@ MStatus VoxelizeTerrainCmd::parseArguments(const MArgList& args)
 		}
 
 		unsigned char pngSignature[8] = {137, 80, 78, 71, 13, 10, 26, 10};
-		unsigned char fileSignature[8];
+		unsigned char fileSignature[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 		file.read(reinterpret_cast<char*>(fileSignature), 8);
 		file.close();
@@ -188,25 +189,42 @@ MStatus VoxelizeTerrainCmd::createParticleSystem(const std::vector<MVector>& vox
 {
 	MStatus status;
 
+	// Disable evaluation manager before creating particles
+	MGlobal::executeCommand("evaluationManager -mode \"off\"");
+
 	// Create particle object
 	MString particleName = "voxelParticles_" + m_outputName;
-	MGlobal::executeCommand("particle -name " + particleName, status);
-	CHECK_MSTATUS_AND_RETURN_IT(status);
+	MGlobal::executeCommand("particle -name " + particleName);
 
+	MGlobal::executeCommand("select -clear");
+
+	// Get the particle shape node
 	MSelectionList selList;
-	status = selList.add(particleName);
-	CHECK_MSTATUS_AND_RETURN_IT(status);
+	MString particleShapeName = particleName + "Shape";
+	status = selList.add(particleShapeName);
+	if (status != MS::kSuccess) {
+		MGlobal::displayError("Particle shape was not found: " + particleShapeName);
+		return status;
+	}
+
 	status = selList.getDependNode(0, m_particleSystemObj);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 
-	// Use voxel positions to position particles
-	for (const MVector& pos : voxelPositions) {
-		MString cmd = MString("particle -e -position ") +
-			pos.x + " " + pos.y + " " + pos.z + " " + particleName;
-		MGlobal::executeCommand(cmd);
+	MFnParticleSystem particleFn(m_particleSystemObj, &status);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	// Convert to MPointArray for batch operation
+	MPointArray positions;
+	positions.setLength(voxelPositions.size());
+	for (size_t i = 0; i < voxelPositions.size(); ++i) {
+		positions[i] = MPoint(voxelPositions[i]);
 	}
 
-	MGlobal::executeCommand("saveInitialState " + particleName);
+	// Emit all
+	status = particleFn.emit(positions);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+
+	particleFn.saveInitialState();
 
 	MString cubeName = "voxelCube_" + m_outputName;
 	MGlobal::executeCommand("polyCube -name " + cubeName, status);

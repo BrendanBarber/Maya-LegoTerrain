@@ -5,6 +5,7 @@
 #include <maya/MString.h>
 #include <maya/MVector.h>
 #include <maya/MOpenCLAutoPtr.h>
+#include <clew/clew.h>
 #include <vector>
 
 typedef struct _cl_context* cl_context;

@@ -79,7 +79,7 @@ __kernel void generateVoxels(
     
     // Generate voxels from minNeighborHeight to heightVoxels
     int writeOffset = 0;
-    for (int h = minNeighborHeight; h < heightVoxels; h++) {
+    for (int h = minNeighborHeight; h <= heightVoxels; h++) {
         float worldY = (float)h * voxelSize;
         voxelPositions[outputBase + writeOffset] = (float3)(worldX, worldY, worldZ);
         writeOffset++;
