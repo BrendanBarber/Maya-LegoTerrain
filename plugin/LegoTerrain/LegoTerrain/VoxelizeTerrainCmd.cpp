@@ -9,6 +9,7 @@
 #include <maya/MDGModifier.h>
 #include <maya/MPlug.h>
 #include <maya/MPointArray.h>
+#include <chrono>
 #include <fstream>
 
 const char* VoxelizeTerrainCmd::commandName = "voxelizeTerrain";
@@ -213,16 +214,32 @@ MStatus VoxelizeTerrainCmd::createParticleSystem(const std::vector<MVector>& vox
 	MFnParticleSystem particleFn(m_particleSystemObj, &status);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 
-	// Convert to MPointArray for batch operation
-	MPointArray positions;
-	positions.setLength(voxelPositions.size());
-	for (size_t i = 0; i < voxelPositions.size(); ++i) {
-		positions[i] = MPoint(voxelPositions[i]);
-	}
+	int oldCount = particleFn.count();
+	int newCount = voxelPositions.size();
+	int totalCount = oldCount + newCount;
 
-	// Emit all
-	status = particleFn.emit(positions);
-	CHECK_MSTATUS_AND_RETURN_IT(status);
+	// Set new count first
+	particleFn.setCount(totalCount);
+
+	// Get attribute arrays
+	MVectorArray positions;
+	MVectorArray velocities;
+	particleFn.position(positions);
+	particleFn.velocity(velocities);
+
+	// Resize
+	positions.setLength(totalCount);
+	velocities.setLength(totalCount);
+
+	// Bulk copy new data
+	memcpy(&positions[oldCount], voxelPositions.data(), newCount * sizeof(MVector));
+
+	// Zero out new velocities
+	memset(&velocities[oldCount], 0, newCount * sizeof(MVector));
+
+	// Apply back
+	particleFn.setPerParticleAttribute("position", positions);
+	particleFn.setPerParticleAttribute("velocity", velocities);
 
 	particleFn.saveInitialState();
 
