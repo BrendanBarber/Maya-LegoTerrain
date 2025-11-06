@@ -6,7 +6,7 @@
 #include <maya/MSelectionList.h>
 #include <maya/MDagPath.h>
 #include <maya/MFnInstancer.h>
-#include <maya/MDGModifier.h>
+#include <maya/MDagModifier.h>
 #include <maya/MPlug.h>
 #include <maya/MPointArray.h>
 #include <chrono>
@@ -20,6 +20,8 @@ const char* VoxelizeTerrainCmd::brickScaleFlag = "-s";
 const char* VoxelizeTerrainCmd::brickScaleFlagLong = "-brickScale";
 const char* VoxelizeTerrainCmd::terrainDimensionsFlag = "-d";
 const char* VoxelizeTerrainCmd::terrainDimensionsFlagLong = "-terrainDimensions";
+const char* VoxelizeTerrainCmd::maxHeightFlag = "-m";
+const char* VoxelizeTerrainCmd::maxHeightFlagLong = "-maxHeight";
 const char* VoxelizeTerrainCmd::outputNameFlag = "-o";
 const char* VoxelizeTerrainCmd::outputNameFlagLong = "-outputName";
 
@@ -29,6 +31,7 @@ VoxelizeTerrainCmd::VoxelizeTerrainCmd()
 	VoxelizeTerrainCmd::m_brickScale = 1.0;
 	VoxelizeTerrainCmd::m_terrainWidth = 512;
 	VoxelizeTerrainCmd::m_terrainHeight = 512;
+	VoxelizeTerrainCmd::m_maxHeight = 256;
 	
 	VoxelizeTerrainCmd::m_outputName = "terrain";
 	VoxelizeTerrainCmd::m_hasValidData = false;
@@ -50,6 +53,7 @@ MSyntax VoxelizeTerrainCmd::newSyntax()
 	syntax.addFlag(heightMapFlag, heightMapFlagLong, MSyntax::kString);
 	syntax.addFlag(brickScaleFlag, brickScaleFlagLong, MSyntax::kDouble);
 	syntax.addFlag(terrainDimensionsFlag, terrainDimensionsFlagLong, MSyntax::kLong, MSyntax::kLong);
+	syntax.addFlag(maxHeightFlag, maxHeightFlagLong, MSyntax::kLong);
 	syntax.addFlag(outputNameFlag, outputNameFlagLong, MSyntax::kString);
 	return syntax;
 }
@@ -74,13 +78,18 @@ MStatus VoxelizeTerrainCmd::redoIt()
 MStatus VoxelizeTerrainCmd::undoIt()
 {
 	MStatus status;
-	MDGModifier dgMod;
+	MDagModifier dgMod;
 
-	if (!m_particleSystemObj.isNull()) {
-		dgMod.deleteNode(m_particleSystemObj);
-	}
+	MGlobal::clearSelectionList();
+
 	if (!m_instancerObj.isNull()) {
 		dgMod.deleteNode(m_instancerObj);
+	}
+	if (!m_cubeObj.isNull()) {
+		dgMod.deleteNode(m_cubeObj);
+	}
+	if (!m_particleTransformObj.isNull()) {
+		dgMod.deleteNode(m_particleTransformObj);
 	}
 
 	return dgMod.doIt();
@@ -154,6 +163,17 @@ MStatus VoxelizeTerrainCmd::parseArguments(const MArgList& args)
 
 		m_terrainWidth = terrainWidth;
 		m_terrainHeight = terrainHeight;
+	}
+	
+	// Get max height
+	if (argData.isFlagSet(maxHeightFlag)) {
+		int maxHeight = argData.flagArgumentInt(maxHeightFlag, 0);
+
+		int MAX_HEIGHT = 256;
+		if (maxHeight < 0) maxHeight = 0;
+		if (maxHeight > MAX_HEIGHT) maxHeight = MAX_HEIGHT;
+
+		m_maxHeight = maxHeight;
 	}
 
 	// Get output name
@@ -247,6 +267,16 @@ MStatus VoxelizeTerrainCmd::createParticleSystem(const std::vector<MVector>& vox
 	MGlobal::executeCommand("polyCube -name " + cubeName, status);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 
+	// Track cube to be instanced
+	MSelectionList cubeList;
+	cubeList.add(cubeName);
+	cubeList.getDependNode(0, m_cubeObj);
+
+	// Track particle transform
+	MSelectionList transformList;
+	transformList.add(particleName);
+	transformList.getDependNode(0, m_particleTransformObj);
+
 	MString instancerName = "voxelInstancer_" + m_outputName;
 	MGlobal::executeCommand("particleInstancer -name " + instancerName +
 		" -addObject -object " + cubeName + " " + particleName, status);
@@ -278,7 +308,8 @@ MStatus VoxelizeTerrainCmd::loadHeightmap(const MString& filepath, std::vector<M
 		outVoxelPositions,
 		m_imageWidth,
 		m_imageHeight,
-		m_brickScale
+		m_brickScale,
+		m_maxHeight
 	);
 
 	if (status == MS::kSuccess) {

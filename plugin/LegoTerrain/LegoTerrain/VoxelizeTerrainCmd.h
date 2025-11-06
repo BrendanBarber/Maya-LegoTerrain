@@ -31,18 +31,23 @@ private:
 	static const char* brickScaleFlagLong;
 	static const char* terrainDimensionsFlag;
 	static const char* terrainDimensionsFlagLong;
+	static const char* maxHeightFlag;
+	static const char* maxHeightFlagLong;
 	static const char* outputNameFlag;
 	static const char* outputNameFlagLong;
 
 	std::vector<MVector> m_voxelPositions;
 
 	MObject m_particleSystemObj;
+	MObject m_particleTransformObj;
+	MObject m_cubeObj;
 	MObject m_instancerObj;
 
 	MString m_heightmapPath;
 	float m_brickScale;
 	unsigned int m_terrainWidth;
 	unsigned int m_terrainHeight;
+	unsigned int m_maxHeight;
 	unsigned int m_imageWidth;
 	unsigned int m_imageHeight;
 	MString m_outputName;

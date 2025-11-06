@@ -2,16 +2,16 @@
 
 A Maya plugin for generating terrain in the style of lego bricks.
 
-Implementation plan:
-- Input: Heightmap
-    - Convert heightmap to a grid of voxel positions, take into account slope on steep areas to avoid vertical gaps
-        - To handle steep slopes, check y value of voxels in the xz directions, find the lowest voxel and keep adding below until filled
-
-
-- Output: Particle Instancer
-    - At each position instance a lego brick particle
-        - set by x y z property
-        - Include an unused color property
+Currently working on:
+    - Scale the heightmap output to be the input x,y dimension
+    - PySide interface with
+        - Heightmap path (and viewer?)
+        - Brick Size
+        - Dimensions
+        - Max height
+        - Output Name
+        * Include info for generation time and then render time 
+    - Lego brick model to be instanced
 
 Possible Additions:
 - Add colors

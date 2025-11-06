@@ -45,9 +45,13 @@ __kernel void generateVoxels(
     int idx = y * width + x;
     uchar4 pixel = input[idx];
     
-    // Convert to grayscale
+    // Convert to grayscale (0-255) and scale to maxHeight
     float gray = (pixel.x + pixel.y + pixel.z) / 3.0f;
-    int heightVoxels = (int)(gray);
+    int heightVoxels = (int)((gray / 255.0f) * (float)maxHeight);
+    
+    // Clamp to valid range
+    if (heightVoxels > maxHeight) heightVoxels = maxHeight;
+    if (heightVoxels < 0) heightVoxels = 0;
     
     // Find minimum neighbor height to fill down to
     int minNeighborHeight = heightVoxels;
@@ -63,7 +67,11 @@ __kernel void generateVoxels(
             int nidx = ny * width + nx;
             uchar4 neighborPixel = input[nidx];
             float neighborGray = (neighborPixel.x + neighborPixel.y + neighborPixel.z) / 3.0f;
-            int neighborHeight = (int)(neighborGray);
+            int neighborHeight = (int)((neighborGray / 255.0f) * (float)maxHeight);
+            
+            // Clamp neighbor height too
+            if (neighborHeight > maxHeight) neighborHeight = maxHeight;
+            if (neighborHeight < 0) neighborHeight = 0;
             
             if (neighborHeight < minNeighborHeight) {
                 minNeighborHeight = neighborHeight;
@@ -79,7 +87,7 @@ __kernel void generateVoxels(
     
     // Generate voxels from minNeighborHeight to heightVoxels
     int writeOffset = 0;
-    for (int h = minNeighborHeight; h <= heightVoxels; h++) {
+    for (int h = minNeighborHeight; h <= heightVoxels && writeOffset < maxHeight; h++) {
         float worldY = (float)h * voxelSize;
         voxelPositions[outputBase + writeOffset] = (float3)(worldX, worldY, worldZ);
         writeOffset++;
@@ -138,7 +146,8 @@ MStatus HeightmapComputeShader::initialize()
 MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     const MString& filepath,
     std::vector<MVector>& outVoxelPositions,
-    float voxelSize)
+    float voxelSize,
+    unsigned int maxHeight)
 {
     if (!fInitialized) {
         MGlobal::displayError("HeightmapComputeShader not initialized. Call initialize() first.");
@@ -188,9 +197,7 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
         return MS::kSuccess;
     }
 
-    int maxHeight = (int)maxGray + 1;
-
-    MGlobal::displayInfo(MString("Max height detected: ") + maxHeight);
+    MGlobal::displayInfo(MString("Max height: ") + maxHeight);
     MGlobal::displayInfo(MString("Allocating buffer for: ") + (pixelCount * maxHeight) + " voxel slots");
 
     size_t imageSize = pixelCount * BYTES_PER_PIXEL;
@@ -273,7 +280,8 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     std::vector<MVector>& outVoxelPositions,
     unsigned int& outWidth,
     unsigned int& outHeight,
-    float voxelSize)
+    float voxelSize,
+    unsigned int maxHeight)
 {
     if (!fInitialized) {
         MGlobal::displayError("HeightmapComputeShader not initialized. Call initialize() first.");
@@ -288,7 +296,7 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     }
 
     image.getSize(outWidth, outHeight);
-    return generateVoxelsFromHeightmap(filepath, outVoxelPositions, voxelSize);
+    return generateVoxelsFromHeightmap(filepath, outVoxelPositions, voxelSize, maxHeight);
 }
 
 void HeightmapComputeShader::cleanup()

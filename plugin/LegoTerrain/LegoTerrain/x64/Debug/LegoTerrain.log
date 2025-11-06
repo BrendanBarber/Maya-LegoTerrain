@@ -1,34 +1,4 @@
 ﻿  VoxelizeTerrainCmd.cpp
   importing
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(242,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(289,49): warning C4244: 'argument': conversion from '_Rep' to 'double', possible loss of data
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(289,49): warning C4244:         with
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(289,49): warning C4244:         [
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(289,49): warning C4244:             _Rep=__int64
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(289,49): warning C4244:         ]
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(290,50): warning C4244: 'argument': conversion from '_Rep' to 'double', possible loss of data
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(290,50): warning C4244:         with
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(290,50): warning C4244:         [
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(290,50): warning C4244:             _Rep=__int64
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(290,50): warning C4244:         ]
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(291,47): warning C4244: 'argument': conversion from '_Rep' to 'double', possible loss of data
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(291,47): warning C4244:         with
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(291,47): warning C4244:         [
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(291,47): warning C4244:             _Rep=__int64
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(291,47): warning C4244:         ]
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(292,47): warning C4244: 'argument': conversion from '_Rep' to 'double', possible loss of data
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(292,47): warning C4244:         with
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(292,47): warning C4244:         [
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(292,47): warning C4244:             _Rep=__int64
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(292,47): warning C4244:         ]
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(293,53): warning C4244: 'argument': conversion from '_Rep' to 'double', possible loss of data
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(293,53): warning C4244:         with
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(293,53): warning C4244:         [
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(293,53): warning C4244:             _Rep=__int64
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(293,53): warning C4244:         ]
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(294,46): warning C4244: 'argument': conversion from '_Rep' to 'double', possible loss of data
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(294,46): warning C4244:         with
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(294,46): warning C4244:         [
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(294,46): warning C4244:             _Rep=__int64
-C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(294,46): warning C4244:         ]
+C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(238,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   LegoTerrain.vcxproj -> C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\x64\Debug\LegoTerrain.mll

@@ -30,14 +30,18 @@ public:
     MStatus generateVoxelsFromHeightmap(
         const MString& filepath,
         std::vector<MVector>& outVoxelPositions,
-        float voxelSize = 1.0f);
+        float voxelSize = 1.0f,
+        unsigned int maxHeight = 256
+    );
 
     MStatus generateVoxelsFromHeightmap(
         const MString& filepath,
         std::vector<MVector>& outVoxelPositions,
         unsigned int& outWidth,
         unsigned int& outHeight,
-        float voxelSize = 1.0f);
+        float voxelSize = 1.0f,
+        unsigned int maxHeight = 256
+    );
 
     void cleanup();
     bool isInitialized() const;
