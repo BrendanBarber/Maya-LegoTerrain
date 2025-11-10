@@ -1,4 +1,7 @@
-﻿  VoxelizeTerrainCmd.cpp
+﻿  HeightmapComputeShader.cpp
+  VoxelizeTerrainCmd.cpp
   importing
+  importing
+C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\HeightmapComputeShader.cpp(266,64): warning C4244: 'argument': conversion from 'size_t' to 'double', possible loss of data
 C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\LegoTerrain\VoxelizeTerrainCmd.cpp(238,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   LegoTerrain.vcxproj -> C:\Users\brend\Desktop\Art\TDSummer\MayaProjects\LegoTerrain\plugin\LegoTerrain\x64\Debug\LegoTerrain.mll

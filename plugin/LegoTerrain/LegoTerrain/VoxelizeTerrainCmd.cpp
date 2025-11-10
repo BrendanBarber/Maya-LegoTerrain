@@ -264,7 +264,8 @@ MStatus VoxelizeTerrainCmd::createParticleSystem(const std::vector<MVector>& vox
 	particleFn.saveInitialState();
 
 	MString cubeName = "voxelCube_" + m_outputName;
-	MGlobal::executeCommand("polyCube -name " + cubeName, status);
+	MGlobal::executeCommand("polyCube -name " + cubeName + " -width " + m_brickScale +
+		" -height " + m_brickScale + " -depth " + m_brickScale, status);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 
 	// Track cube to be instanced
@@ -308,6 +309,8 @@ MStatus VoxelizeTerrainCmd::loadHeightmap(const MString& filepath, std::vector<M
 		outVoxelPositions,
 		m_imageWidth,
 		m_imageHeight,
+		m_terrainWidth,
+		m_terrainHeight,
 		m_brickScale,
 		m_maxHeight
 	);

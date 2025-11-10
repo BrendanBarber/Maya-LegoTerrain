@@ -30,6 +30,8 @@ public:
     MStatus generateVoxelsFromHeightmap(
         const MString& filepath,
         std::vector<MVector>& outVoxelPositions,
+        unsigned int& terrainWidth,
+        unsigned int& terrainHeight,
         float voxelSize = 1.0f,
         unsigned int maxHeight = 256
     );
@@ -39,6 +41,8 @@ public:
         std::vector<MVector>& outVoxelPositions,
         unsigned int& outWidth,
         unsigned int& outHeight,
+        unsigned int& terrainWidth,
+        unsigned int& terrainHeight,
         float voxelSize = 1.0f,
         unsigned int maxHeight = 256
     );

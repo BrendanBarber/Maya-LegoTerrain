@@ -28,32 +28,70 @@ bool HeightmapComputeShader::isInitialized() const
 const char* HeightmapComputeShader::getKernelSource()
 {
     return R"(
-// Single-pass kernel: generate voxels with fixed stride per pixel
+// Bilinear interpolation
+float sampleHeight(__global uchar4* input, int imgWidth, int imgHeight, float u, float v, int maxHeight)
+{
+    u = clamp(u, 0.0f, (float)(imgWidth - 1));
+    v = clamp(v, 0.0f, (float)(imgHeight - 1));
+
+    int x0 = (int)floor(u);
+    int y0 = (int)floor(v);
+    int x1 = min(x0 + 1, imgWidth - 1);
+    int y1 = min(y0 + 1, imgHeight - 1);
+    
+    float fx = u - (float)x0;
+    float fy = v - (float)y0;
+
+    // Corner sampling
+    uchar4 p00 = input[y0 * imgWidth + x0];
+    uchar4 p10 = input[y0 * imgWidth + x1];
+    uchar4 p01 = input[y1 * imgWidth + x0];
+    uchar4 p11 = input[y1 * imgWidth + x1];
+
+    // Get grayscale heights
+    float h00 = ((float)p00.x + (float)p00.y + (float)p00.z) / 3.0f;
+    float h10 = ((float)p10.x + (float)p10.y + (float)p10.z) / 3.0f;
+    float h01 = ((float)p01.x + (float)p01.y + (float)p01.z) / 3.0f;
+    float h11 = ((float)p11.x + (float)p11.y + (float)p11.z) / 3.0f;
+
+    // Bi linear interpolation
+    float h0 = mix(h00, h10, fx);
+    float h1 = mix(h01, h11, fx);
+    float heightGray = mix(h0, h1, fy);
+
+    // scale to the max height
+    return (heightGray / 255.0f) * (float)maxHeight;
+}
+
+// Single-pass kernel: generate voxels with scaling/interpolation support
 __kernel void generateVoxels(
     __global uchar4* input,
     __global float3* voxelPositions,
-    int width,
-    int height,
+    int width,              // Image width
+    int height,             // Image height
+    int terrainWidth,       // Voxel terrain width
+    int terrainHeight,      // Voxel terrain height
     float voxelSize,
     int maxHeight)
 {
     int x = get_global_id(0);
     int y = get_global_id(1);
     
-    if (x >= width || y >= height) return;
+    // Now we iterate over terrain dimensions, not image dimensions
+    if (x >= terrainWidth || y >= terrainHeight) return;
     
-    int idx = y * width + x;
-    uchar4 pixel = input[idx];
+    // Calculate UV coordinates in image space
+    float u = ((float)x / (float)(terrainWidth - 1)) * (float)(width - 1);
+    float v = ((float)y / (float)(terrainHeight - 1)) * (float)(height - 1);
     
-    // Convert to grayscale (0-255) and scale to maxHeight
-    float gray = (pixel.x + pixel.y + pixel.z) / 3.0f;
-    int heightVoxels = (int)((gray / 255.0f) * (float)maxHeight);
+    // Sample height using bilinear interpolation
+    float heightValue = sampleHeight(input, width, height, u, v, maxHeight);
+    int heightVoxels = (int)round(heightValue);
     
     // Clamp to valid range
-    if (heightVoxels > maxHeight) heightVoxels = maxHeight;
-    if (heightVoxels < 0) heightVoxels = 0;
+    heightVoxels = clamp(heightVoxels, 0, maxHeight);
     
-    // Find minimum neighbor height to fill down to
+    // Sample neighbor heights for filling
     int minNeighborHeight = heightVoxels;
     for (int dy = -1; dy <= 1; dy++) {
         for (int dx = -1; dx <= 1; dx++) {
@@ -62,16 +100,15 @@ __kernel void generateVoxels(
             int nx = x + dx;
             int ny = y + dy;
             
-            if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
+            if (nx < 0 || nx >= terrainWidth || ny < 0 || ny >= terrainHeight) continue;
             
-            int nidx = ny * width + nx;
-            uchar4 neighborPixel = input[nidx];
-            float neighborGray = (neighborPixel.x + neighborPixel.y + neighborPixel.z) / 3.0f;
-            int neighborHeight = (int)((neighborGray / 255.0f) * (float)maxHeight);
+            // Sample neighbor position in image space
+            float nu = ((float)nx / (float)(terrainWidth - 1)) * (float)(width - 1);
+            float nv = ((float)ny / (float)(terrainHeight - 1)) * (float)(height - 1);
             
-            // Clamp neighbor height too
-            if (neighborHeight > maxHeight) neighborHeight = maxHeight;
-            if (neighborHeight < 0) neighborHeight = 0;
+            float neighborHeightValue = sampleHeight(input, width, height, nu, nv, maxHeight);
+            int neighborHeight = (int)round(neighborHeightValue);
+            neighborHeight = clamp(neighborHeight, 0, maxHeight);
             
             if (neighborHeight < minNeighborHeight) {
                 minNeighborHeight = neighborHeight;
@@ -79,7 +116,8 @@ __kernel void generateVoxels(
         }
     }
     
-    // Calculate base offset for this pixel
+    // Calculate output index based on terrain dimensions
+    int idx = y * terrainWidth + x;
     int outputBase = idx * maxHeight;
     
     float worldX = (float)x * voxelSize;
@@ -146,6 +184,8 @@ MStatus HeightmapComputeShader::initialize()
 MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     const MString& filepath,
     std::vector<MVector>& outVoxelPositions,
+    unsigned int& terrainWidth,
+    unsigned int& terrainHeight,
     float voxelSize,
     unsigned int maxHeight)
 {
@@ -156,6 +196,11 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
 
     if (voxelSize <= 0.0f) {
         MGlobal::displayError("Voxel size must be greater than zero");
+        return MS::kFailure;
+    }
+
+    if (terrainWidth < 1 || terrainHeight < 1) {
+        MGlobal::displayError("Terrain size must be atleast 1x1");
         return MS::kFailure;
     }
 
@@ -183,10 +228,10 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
 
     // Find maximum grayscale value to optimize buffer size
     static const size_t BYTES_PER_PIXEL = 4; // RGBA
-    size_t pixelCount = width * height;
+    size_t imagePixelCount = width * height;
     unsigned char maxGray = 0;
 
-    for (size_t i = 0; i < pixelCount * BYTES_PER_PIXEL; i += BYTES_PER_PIXEL) {
+    for (size_t i = 0; i < imagePixelCount * BYTES_PER_PIXEL; i += BYTES_PER_PIXEL) {
         unsigned char gray = (pixels[i] + pixels[i + 1] + pixels[i + 2]) / 3;
         maxGray = std::max(maxGray, gray);
     }
@@ -198,9 +243,8 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     }
 
     MGlobal::displayInfo(MString("Max height: ") + maxHeight);
-    MGlobal::displayInfo(MString("Allocating buffer for: ") + (pixelCount * maxHeight) + " voxel slots");
 
-    size_t imageSize = pixelCount * BYTES_PER_PIXEL;
+    size_t imageSize = imagePixelCount * BYTES_PER_PIXEL;
     cl_int err;
 
     // Create input buffer
@@ -215,8 +259,12 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     }
     inputBuffer.attach(clInputBuffer);
 
-    // Create output buffer with fixed stride per pixel
-    size_t bufferSize = pixelCount * maxHeight;
+    // Create output buffer with fixed stride per terrain voxel
+    size_t terrainPixelCount = terrainWidth * terrainHeight;
+    size_t bufferSize = terrainPixelCount * maxHeight;
+    
+    MGlobal::displayInfo(MString("Allocating buffer for: ") + (bufferSize) + " voxel slots");
+    
     MAutoCLMem voxelPositionsBuffer;
     cl_mem clVoxelPositions = clCreateBuffer(fContext,
         CL_MEM_WRITE_ONLY,
@@ -234,10 +282,12 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     clSetKernelArg(generateKernel, 1, sizeof(cl_mem), &clVoxelPositions);
     clSetKernelArg(generateKernel, 2, sizeof(int), &width);
     clSetKernelArg(generateKernel, 3, sizeof(int), &height);
-    clSetKernelArg(generateKernel, 4, sizeof(float), &voxelSize);
-    clSetKernelArg(generateKernel, 5, sizeof(int), &maxHeight);
+    clSetKernelArg(generateKernel, 4, sizeof(int), &terrainWidth);
+    clSetKernelArg(generateKernel, 5, sizeof(int), &terrainHeight);
+    clSetKernelArg(generateKernel, 6, sizeof(float), &voxelSize);
+    clSetKernelArg(generateKernel, 7, sizeof(int), &maxHeight);
 
-    size_t globalWorkSize[2] = { width, height };
+    size_t globalWorkSize[2] = { terrainWidth, terrainHeight };
     err = clEnqueueNDRangeKernel(fQueue, generateKernel, 2, NULL,
         globalWorkSize, NULL, 0, NULL, NULL);
     if (err != CL_SUCCESS) {
@@ -261,7 +311,7 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     outVoxelPositions.clear();
 
     // Estimate the voxel depth at a point is on average less than 3
-    outVoxelPositions.reserve(pixelCount * 3);
+    outVoxelPositions.reserve(terrainPixelCount * 3);
     for (size_t i = 0; i < bufferSize; i++) {
         const cl_float3& pos = clVoxelPositionsData[i];
         // Check if valid voxel
@@ -280,6 +330,8 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     std::vector<MVector>& outVoxelPositions,
     unsigned int& outWidth,
     unsigned int& outHeight,
+    unsigned int& terrainWidth,
+    unsigned int& terrainHeight,
     float voxelSize,
     unsigned int maxHeight)
 {
@@ -296,7 +348,8 @@ MStatus HeightmapComputeShader::generateVoxelsFromHeightmap(
     }
 
     image.getSize(outWidth, outHeight);
-    return generateVoxelsFromHeightmap(filepath, outVoxelPositions, voxelSize, maxHeight);
+    return generateVoxelsFromHeightmap(filepath, 
+        outVoxelPositions, terrainWidth, terrainHeight, voxelSize, maxHeight);
 }
 
 void HeightmapComputeShader::cleanup()
