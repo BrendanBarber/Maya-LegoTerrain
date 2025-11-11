@@ -136,15 +136,30 @@ class VoxelizeTerrainUI(QtWidgets.QDialog):
             return
 
         try:
-            cmds.voxelizeTerrain(
+            result = cmds.voxelizeTerrain(
                 heightMapPath=heightmap_path,
                 brickScale=brick_scale,
                 terrainDimensions=(terrain_width, terrain_height),
                 maxHeight=max_height,
                 outputName=output_name
             )
-            print(f"Terrain generated: {output_name}")
-            QtWidgets.QMessageBox.information(self, "Success", f"Terrain '{output_name}' generated successfully!")
+
+            if result:
+                load_time, particle_time, total_time, voxel_count = result
+                message = (
+                    f"Terrain '{output_name}' generated successfully!\\n\\n"
+                    f"Performance:\\n"
+                    f"  • Heightmap loading: {float(load_time):.2f}ms\\n"
+                    f"  • Particle creation: {float(particle_time):.2f}ms\\n"
+                    f"  • Total time: {float(total_time):.2f}ms\\n"
+                    f"  • Voxels created: {voxel_count}"
+                )
+            else:
+                message = f"Terrain '{output_name}' generated successfully!"
+
+            print(message)
+            QtWidgets.QMessageBox.information(self, "Success", message)
+
         except Exception as e:
             QtWidgets.QMessageBox.critical(self, "Error", f"Failed to generate terrain:\\n{str(e)}")
 

@@ -55,6 +55,9 @@ MSyntax VoxelizeTerrainCmd::newSyntax()
 	syntax.addFlag(terrainDimensionsFlag, terrainDimensionsFlagLong, MSyntax::kLong, MSyntax::kLong);
 	syntax.addFlag(maxHeightFlag, maxHeightFlagLong, MSyntax::kLong);
 	syntax.addFlag(outputNameFlag, outputNameFlagLong, MSyntax::kString);
+
+	syntax.setObjectType(MSyntax::kStringObjects);
+
 	return syntax;
 }
 
@@ -194,14 +197,34 @@ MStatus VoxelizeTerrainCmd::parseArguments(const MArgList& args)
 
 MStatus VoxelizeTerrainCmd::executeCommand() {
 	MStatus status;
-	
+
+	// Start total timer
+	auto startTotal = std::chrono::high_resolution_clock::now();
+
 	// Load the heightmap to get voxel positions
+	auto startLoad = std::chrono::high_resolution_clock::now();
 	status = loadHeightmap(m_heightmapPath, m_voxelPositions);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
+	auto endLoad = std::chrono::high_resolution_clock::now();
+	double loadTime = std::chrono::duration<double>(endLoad - startLoad).count() * 1000.0;
 
 	// Use the voxel positions to create a particle system
+	auto startParticles = std::chrono::high_resolution_clock::now();
 	status = createParticleSystem(m_voxelPositions);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
+	auto endParticles = std::chrono::high_resolution_clock::now();
+	double particleTime = std::chrono::duration<double>(endParticles - startParticles).count() * 1000.0;
+
+	auto endTotal = std::chrono::high_resolution_clock::now();
+	double totalTime = std::chrono::duration<double>(endTotal - startTotal).count() * 1000.0;
+
+	MStringArray result;
+	result.append(MString() + loadTime);
+	result.append(MString() + particleTime);
+	result.append(MString() + totalTime);
+	result.append(MString() + m_voxelPositions.size());
+
+	MPxCommand::setResult(result);
 
 	return MS::kSuccess;
 }
