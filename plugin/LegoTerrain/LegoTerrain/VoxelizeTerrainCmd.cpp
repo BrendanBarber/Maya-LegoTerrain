@@ -9,6 +9,7 @@
 #include <maya/MDagModifier.h>
 #include <maya/MPlug.h>
 #include <maya/MPointArray.h>
+#include <maya/MFnDependencyNode.h>
 #include <chrono>
 #include <fstream>
 
@@ -233,9 +234,6 @@ MStatus VoxelizeTerrainCmd::createParticleSystem(const std::vector<MVector>& vox
 {
 	MStatus status;
 
-	// Disable evaluation manager before creating particles
-	MGlobal::executeCommand("evaluationManager -mode \"off\"");
-
 	// Create particle object
 	MString particleName = "voxelParticles_" + m_outputName;
 	MGlobal::executeCommand("particle -name " + particleName);
@@ -312,7 +310,16 @@ MStatus VoxelizeTerrainCmd::createParticleSystem(const std::vector<MVector>& vox
 	status = selList.getDependNode(0, m_instancerObj);
 	CHECK_MSTATUS_AND_RETURN_IT(status);
 
+	// Set hideOnPlayback attribute on the instancer
+	MFnDependencyNode instancerFn(m_instancerObj, &status);
+	CHECK_MSTATUS_AND_RETURN_IT(status);
+	MPlug hideOnPlaybackPlug = instancerFn.findPlug("hideOnPlayback", status);
+	if (status == MS::kSuccess) {
+		hideOnPlaybackPlug.setBool(true);
+	}
+
 	MGlobal::executeCommand("hide " + cubeName);
+	MGlobal::executeCommand("disconnectAttr time1.outTime " + particleShapeName + ".currentTime", false, false);
 
 	return MS::kSuccess;
 }
